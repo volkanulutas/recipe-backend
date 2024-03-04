@@ -1,11 +1,11 @@
 package com.vem.recipes.recipes.controller;
 
-import com.vem.recipes.recipes.converter.IngredientConverter;
-import com.vem.recipes.recipes.model.dto.IngredientDto;
+import com.vem.recipes.recipes.converter.IngredientDetailConverter;
+import com.vem.recipes.recipes.model.dto.IngredientDetailDto;
 import com.vem.recipes.recipes.model.dto.RecipeDto;
-import com.vem.recipes.recipes.model.entity.IngredientEntity;
+import com.vem.recipes.recipes.model.entity.IngredientDetailEntity;
 import com.vem.recipes.recipes.model.exception.ResourceNotFoundException;
-import com.vem.recipes.recipes.service.IngredientService;
+import com.vem.recipes.recipes.service.IngredientDetailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,22 +32,22 @@ import java.util.List;
 @RequestMapping("api/ingredient")
 @Tag(name = "Ingredient", description = "Ingredient Controller")
 public class IngredientController {
-    private final IngredientService ingredientService;
+    private final IngredientDetailService ingredientService;
 
     @Autowired
-    public IngredientController(IngredientService ingredientService) {this.ingredientService = ingredientService;}
+    public IngredientController(IngredientDetailService ingredientService) {this.ingredientService = ingredientService;}
 
     @GetMapping("/")
     @Operation(summary = "Get all ingredient(s).", description = "Get all ingredient(s).")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully returned all ingredient(s)."),
             @ApiResponse(responseCode = "404", description = "Ingredient is not found.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error.", content = @Content)})
-    public ResponseEntity<List<IngredientDto>> getAllIngredients() {
+    public ResponseEntity<List<IngredientDetailDto>> getAllIngredients() {
         try {
-            List<IngredientDto> ingredientDtoList = new ArrayList<>();
-            List<IngredientEntity> allIngredient = ingredientService.getAllIngredients();
-            for (IngredientEntity ingredientDto : allIngredient) {
-                ingredientDtoList.add(IngredientConverter.toDto(ingredientDto));
+            List<IngredientDetailDto> ingredientDtoList = new ArrayList<>();
+            List<IngredientDetailEntity> allIngredient = ingredientService.getAllIngredients();
+            for (IngredientDetailEntity ingredientDto : allIngredient) {
+                ingredientDtoList.add(IngredientDetailConverter.toDto(ingredientDto));
             }
             return ResponseEntity.ok(ingredientDtoList);
         } catch (Exception ex) {
@@ -59,10 +59,10 @@ public class IngredientController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The ingredient successfully created."),
             @ApiResponse(responseCode = "500", description = "Internal Server Error.", content = @Content)})
     @PostMapping("/")
-    public ResponseEntity<IngredientDto> createIngredient(@RequestBody IngredientDto ingredientDto) {
+    public ResponseEntity<IngredientDetailDto> createIngredient(@RequestBody IngredientDetailDto ingredientDto) {
         try {
-            IngredientEntity ingredient = ingredientService.createIngredient(IngredientConverter.toEntity(ingredientDto));
-            return ResponseEntity.ok(IngredientConverter.toDto(ingredient));
+            IngredientDetailEntity ingredient = ingredientService.createIngredient(IngredientDetailConverter.toEntity(ingredientDto));
+            return ResponseEntity.ok(IngredientDetailConverter.toDto(ingredient));
         } catch (Exception ex) {
             return ResponseEntity.internalServerError().build();
         }
@@ -73,10 +73,10 @@ public class IngredientController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully returned all ingredient(s)."),
             @ApiResponse(responseCode = "404", description = "Ingredient is not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error.", content = @Content)})
-    public ResponseEntity<IngredientDto> getRecipeById(@PathVariable("id") Long id) {
+    public ResponseEntity<IngredientDetailDto> getRecipeById(@PathVariable("id") Long id) {
         try {
-            IngredientEntity ingredient = ingredientService.getIngredientById(id);
-            return ResponseEntity.ok(IngredientConverter.toDto(ingredient));
+            IngredientDetailEntity ingredient = ingredientService.getIngredientById(id);
+            return ResponseEntity.ok(IngredientDetailConverter.toDto(ingredient));
         } catch (ResourceNotFoundException ex) {
             return ResponseEntity.notFound().build();
         } catch (Exception ex) {

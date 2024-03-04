@@ -7,16 +7,16 @@ public class IngredientConverter {
     public static IngredientDto toDto(IngredientEntity source) {
         IngredientDto target = new IngredientDto();
         target.setId(source.getId());
-        target.setIngredientTemplate(IngredientTemplateConverter.toDto(source.getIngredientTemplate()));
-        target.setAmount(source.getAmount());
+        target.setName(source.getName());
+        target.setPicture(source.getPicture());
         return target;
     }
 
     public static IngredientEntity toEntity(IngredientDto source) {
         IngredientEntity target = new IngredientEntity();
         target.setId(source.getId());
-        target.setIngredientTemplate(IngredientTemplateConverter.toEntity(source.getIngredientTemplate()));
-        target.setAmount(source.getAmount());
+        target.setName(source.getName());
+        target.setPicture(source.getPicture());
         return target;
     }
 }

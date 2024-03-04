@@ -1,31 +1,31 @@
 package com.vem.recipes.recipes;
 
+import com.vem.recipes.recipes.model.entity.IngredientDetailEntity;
 import com.vem.recipes.recipes.model.entity.IngredientEntity;
-import com.vem.recipes.recipes.model.entity.IngredientTemplateEntity;
 import com.vem.recipes.recipes.model.entity.RecipeEntity;
+import com.vem.recipes.recipes.service.IngredientDetailService;
 import com.vem.recipes.recipes.service.IngredientService;
-import com.vem.recipes.recipes.service.IngredientTemplateService;
 import com.vem.recipes.recipes.service.RecipeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class ApplicationStartup implements InitializingBean {
     private final RecipeService recipeService;
 
-    private final IngredientService ingredientService;
+    private final IngredientDetailService ingredientService;
 
-    private final IngredientTemplateService ingredientTemplateService;
+    private final IngredientService ingredientTemplateService;
 
     @Autowired
-    public ApplicationStartup(RecipeService recipeService, IngredientService ingredientService, IngredientTemplateService ingredientTemplateService) {
+    public ApplicationStartup(RecipeService recipeService, IngredientDetailService ingredientService, IngredientService ingredientTemplateService) {
         this.recipeService = recipeService;
         this.ingredientService = ingredientService;
         this.ingredientTemplateService = ingredientTemplateService;
@@ -33,37 +33,43 @@ public class ApplicationStartup implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        IngredientTemplateEntity template1 = new IngredientTemplateEntity();
-        template1.setName("Kakao");
-        template1.setPicture("Kakao Pic");
-        template1 = ingredientTemplateService.createIngredientTemplate(template1);
-        IngredientTemplateEntity template2 = new IngredientTemplateEntity();
-        template2.setName("Leblebi");
-        template2.setPicture("Leblebi Pic");
-        template2 = ingredientTemplateService.createIngredientTemplate(template2);
-        IngredientTemplateEntity template3 = new IngredientTemplateEntity();
-        template3.setName("Tahin");
-        template3.setPicture("Tahin Pic");
-        template3 = ingredientTemplateService.createIngredientTemplate(template3);
+        IngredientEntity ingredient1 = createIngredient("Leblebi", "Leblebi Pic");
+        IngredientEntity ingredient2 = createIngredient("Kakao", "Kakao Pic");
+        IngredientEntity ingredient3 = createIngredient("Tahin", "Tahin Pic");
+        ingredient1 = ingredientTemplateService.createIngredientTemplate(ingredient2);
+        ingredient2 = ingredientTemplateService.createIngredientTemplate(ingredient2);
+        ingredient3 = ingredientTemplateService.createIngredientTemplate(ingredient3);
+        // ----
+        IngredientDetailEntity ingredientDetail1 = createIngredientDetail(ingredient1, "1 Su Bardağı");
+        ingredientDetail1 = ingredientService.createIngredient(ingredientDetail1);
+        IngredientDetailEntity ingredientDetail2 = createIngredientDetail(ingredient1, "1 Su Bardağı");
+        ingredientDetail2 = ingredientService.createIngredient(ingredientDetail2);
+        IngredientDetailEntity ingredientDetail3 = createIngredientDetail(ingredient1, "3 Su Bardağı");
+        ingredientDetail3 = ingredientService.createIngredient(ingredientDetail3);
+        // ----
         RecipeEntity recipe = new RecipeEntity();
         recipe.setName("Leblebi Topları");
-        recipe.setRecipeDetailSet(
-                Set.of("1- Bir su bardağı leblebiyi öğütücü kullanarak öğütünüz.", "2- İçerisine 3 yemek kaşığı tahini karıştırınız.",
-                        "3- İçerisine 1 yemek kaşığı kakaoyu ekleyiniz.", "4- Karışımı yoğurunuz.", "5- İstenilen top şeklini veriniz.",
-                        "6- 15 dk. buzdolabında beklettikten sonra servis edebilirsiniz."));
-        IngredientEntity ingredient1 = new IngredientEntity();
-        ingredient1.setIngredientTemplate(template1);
-        ingredient1.setAmount("1 Kaşık");
-        ingredient1 = ingredientService.createIngredient(ingredient1);
-        IngredientEntity ingredient2 = new IngredientEntity();
-        ingredient2.setIngredientTemplate(template2);
-        ingredient2.setAmount("1 Su Bardağı");
-        ingredient2 = ingredientService.createIngredient(ingredient2);
+        Set<IngredientDetailEntity> ingredientDetailSet = Set.of(ingredientDetail1, ingredientDetail2, ingredientDetail3);
+        Set<Long> ingredientDetailIdSet = ingredientDetailSet.stream().map(e -> e.getId()).collect(Collectors.toSet());
+        Map<Long, String> definitionMap =
+                Map.of(1L, "1- Bir su bardağı leblebiyi öğütücü kullanarak öğütünüz.", 2L, "2- İçerisine 3 yemek kaşığı tahini karıştırınız.", 3L,
+                        "3- İçerisine 1 yemek kaşığı kakaoyu ekleyiniz.", 4L, "4- Karışımı yoğurunuz.", 5L, "5- İstenilen top şeklini veriniz", 6L,
+                        "6- 15 dk. buzdolabında beklettikten sonra servis edebilirsiniz.");
+        recipe.setDefinitionMap(definitionMap);
+        recipe = recipeService.createRecipe(recipe, ingredientDetailIdSet);
+    }
+
+    private static IngredientDetailEntity createIngredientDetail(IngredientEntity ingredient, String amount) {
+        IngredientDetailEntity ingredientDetail1 = new IngredientDetailEntity();
+        ingredientDetail1.setIngredient(ingredient);
+        ingredientDetail1.setAmount(amount);
+        return ingredientDetail1;
+    }
+
+    private static IngredientEntity createIngredient(String name, String picture) {
         IngredientEntity ingredient3 = new IngredientEntity();
-        ingredient2.setIngredientTemplate(template3);
-        ingredient2.setAmount("3 Su Bardağı");
-        ingredient3 = ingredientService.createIngredient(ingredient3);
-        recipe.setIngredientSet(Set.of(ingredient1, ingredient2, ingredient3));
-        recipe = recipeService.createRecipe(recipe);
+        ingredient3.setName(name);
+        ingredient3.setPicture(picture);
+        return ingredient3;
     }
 }

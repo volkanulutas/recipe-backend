@@ -6,11 +6,11 @@ import com.vem.recipes.recipes.model.exception.ResourceNotFoundException;
 import java.util.List;
 
 public interface IngredientService {
-    List<IngredientEntity> getAllIngredients();
+    List<IngredientEntity> getAllIngredientTemplates();
 
-    IngredientEntity createIngredient(IngredientEntity ingredient);
+    IngredientEntity createIngredientTemplate(IngredientEntity ingredient);
 
-    IngredientEntity getIngredientById(Long id) throws ResourceNotFoundException;
+    IngredientEntity getIngredientTemplateById(Long id) throws ResourceNotFoundException;
 
-    void deleteIngredientById(Long id) throws ResourceNotFoundException;
+    void deleteIngredientTemplateById(Long id) throws ResourceNotFoundException;
 }

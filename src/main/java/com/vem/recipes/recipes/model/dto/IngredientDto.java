@@ -2,11 +2,20 @@ package com.vem.recipes.recipes.model.dto;
 
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 public class IngredientDto {
     private Long id;
 
-    private IngredientTemplateDto ingredientTemplate;
+    private String name;
 
-    private String amount;
+    private String picture;
+
+    private Set<IngredientDetailDto> ingredientDetailSet = new HashSet<>();
+
+    public void addIngredientDetail(IngredientDetailDto ingredientDetail) {
+        ingredientDetailSet.add(ingredientDetail);
+    }
 }

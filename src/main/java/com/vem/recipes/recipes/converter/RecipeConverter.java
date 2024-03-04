@@ -3,16 +3,16 @@ package com.vem.recipes.recipes.converter;
 import com.vem.recipes.recipes.model.dto.RecipeDto;
 import com.vem.recipes.recipes.model.entity.RecipeEntity;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.stream.Collectors;
 
 public class RecipeConverter {
     public static RecipeEntity toEntity(RecipeDto source) {
         RecipeEntity target = new RecipeEntity();
         target.setId(source.getId());
         target.setName(source.getName());
-        target.setRecipeDetailSet(new HashSet<>(source.getRecipeDetailList()));
-        target.setIngredientSet(new HashSet<>(source.getIngredientList()));
+        target.setIngredientDetailSet(
+                source.getIngredientDetailSet().stream().map(e -> IngredientDetailConverter.toEntity(e)).collect(Collectors.toSet()));
+        target.setDefinitionMap(source.getDefinitionMap());
         return target;
     }
 
@@ -20,8 +20,9 @@ public class RecipeConverter {
         RecipeDto target = new RecipeDto();
         target.setId(source.getId());
         target.setName(source.getName());
-        target.setRecipeDetailList(new ArrayList<>(source.getRecipeDetailSet()));
-        target.setIngredientList(new ArrayList<>(source.getIngredientSet()));
+        target.setIngredientDetailSet(
+                source.getIngredientDetailSet().stream().map(e -> IngredientDetailConverter.toDto(e)).collect(Collectors.toSet()));
+        target.setDefinitionMap(source.getDefinitionMap());
         return target;
     }
 }

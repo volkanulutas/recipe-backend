@@ -15,30 +15,32 @@ public class IngredientServiceImpl implements IngredientService {
     private final IngredientRepository ingredientRepository;
 
     @Autowired
-    public IngredientServiceImpl(IngredientRepository ingredientRepository) {this.ingredientRepository = ingredientRepository;}
+    public IngredientServiceImpl(IngredientRepository ingredientRepository) {
+        this.ingredientRepository = ingredientRepository;
+    }
 
     @Override
-    public List<IngredientEntity> getAllIngredients() {
+    public List<IngredientEntity> getAllIngredientTemplates() {
         return ingredientRepository.findAll();
     }
 
     @Override
-    public IngredientEntity createIngredient(IngredientEntity ingredient) {
-        return ingredientRepository.save(ingredient);
+    public IngredientEntity createIngredientTemplate(IngredientEntity ingredientTemplate) {
+        return ingredientRepository.save(ingredientTemplate);
     }
 
     @Override
-    public IngredientEntity getIngredientById(Long id) throws ResourceNotFoundException {
-        Optional<IngredientEntity> recipeOptional = ingredientRepository.findById(id);
-        if (recipeOptional.isEmpty()) {
-            throw new ResourceNotFoundException("The ingredientEntity is not found.");
+    public IngredientEntity getIngredientTemplateById(Long id) throws ResourceNotFoundException {
+        Optional<IngredientEntity> ingredientTemplateOptional = ingredientRepository.findById(id);
+        if (ingredientTemplateOptional.isEmpty()) {
+            throw new ResourceNotFoundException("The ingredient template is not found.");
         }
-        return recipeOptional.get();
+        return ingredientTemplateOptional.get();
     }
 
     @Override
-    public void deleteIngredientById(Long id) throws ResourceNotFoundException {
-        IngredientEntity ingredient = this.getIngredientById(id);
-        this.ingredientRepository.delete(ingredient);
+    public void deleteIngredientTemplateById(Long id) throws ResourceNotFoundException {
+        IngredientEntity ingredientTemplate = this.getIngredientTemplateById(id);
+        this.ingredientRepository.delete(ingredientTemplate);
     }
 }

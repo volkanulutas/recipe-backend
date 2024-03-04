@@ -1,10 +1,12 @@
 package com.vem.recipes.recipes.model.dto;
 
-import com.vem.recipes.recipes.model.entity.IngredientEntity;
+import com.vem.recipes.recipes.model.entity.IngredientDetailEntity;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Data
 public class RecipeDto {
@@ -12,7 +14,7 @@ public class RecipeDto {
 
     private String name;
 
-    private List<IngredientEntity> ingredientList = new ArrayList<>();
+    private Set<IngredientDetailDto> ingredientDetailSet = new HashSet<>();
 
-    private List<String> recipeDetailList = new ArrayList<>();
+    private Map<Long, String> definitionMap = new HashMap<>();
 }

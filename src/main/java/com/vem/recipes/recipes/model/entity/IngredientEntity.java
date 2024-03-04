@@ -2,9 +2,7 @@ package com.vem.recipes.recipes.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,12 +20,16 @@ import java.util.Set;
 @Table(name = "INGREDIENT")
 public class IngredientEntity extends BaseEntity {
     @Column
-    private String amount;
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "ingredientTemplate_id", nullable = false)
-    private IngredientTemplateEntity ingredientTemplate;
+    @Column
+    private String picture;
 
-    @ManyToMany(mappedBy = "ingredientSet")
-    private Set<RecipeEntity> recipeList = new HashSet<>();
+    @OneToMany(mappedBy = "ingredient")
+    private Set<IngredientDetailEntity> ingredientDetailSet = new HashSet<>();
+
+    public void addIngredientDetail(IngredientDetailEntity ingredientDetail) {
+        ingredientDetailSet.add(ingredientDetail);
+        ingredientDetail.setIngredient(this);
+    }
 }

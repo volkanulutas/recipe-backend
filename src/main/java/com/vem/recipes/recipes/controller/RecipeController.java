@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -61,7 +62,8 @@ public class RecipeController {
     @PostMapping("/")
     public ResponseEntity<RecipeDto> createRecipe(@RequestBody RecipeDto recipeDto) {
         try {
-            RecipeEntity recipe = recipeService.createRecipe(RecipeConverter.toEntity(recipeDto));
+            RecipeEntity recipe = RecipeConverter.toEntity(recipeDto);
+            recipe = recipeService.createRecipe(recipe, recipeDto.getIngredientDetailSet().stream().map(e -> e.getId()).collect(Collectors.toSet()));
             return ResponseEntity.ok(RecipeConverter.toDto(recipe));
         } catch (Exception ex) {
             return ResponseEntity.internalServerError().build();
